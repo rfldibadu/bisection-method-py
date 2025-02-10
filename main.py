@@ -66,9 +66,20 @@ def bisection_method(func, a, b, error_accept):
 
 def plot_function(func, a_start, b_start, midpoints, a_values, b_values):
     """ Plots the function and the bisection method iterations. """
-    x = np.linspace(-2, 6, 400)  # Ensure x-axis range matches the required values
-    y = [eval(func, {"x": val, "sin": math.sin, "cos": math.cos, "tan": math.tan,
-                     "log": math.log, "exp": math.exp, "pi": math.pi, "e": math.e}) for val in x]
+    # Check if log(x) is in the function string
+    if "log(" in func:
+        x = np.linspace(0.01, 6, 400)  # Avoid log(0) and negative values
+    else:
+        x = np.linspace(-2, 2, 400)  # Allow negative values for other functions
+
+    # Safely evaluate the function
+    y = []
+    for val in x:
+        try:
+            y.append(eval(func, {"x": val, "sin": math.sin, "cos": math.cos, "tan": math.tan,
+                                 "log": math.log, "exp": math.exp, "pi": math.pi, "e": math.e}))
+        except ValueError:
+            y.append(float('nan'))  # Handle domain errors (e.g., log(negative number))
 
     plt.figure(figsize=(8, 5))
     plt.plot(x, y, label=f"f(x) = {func}", color='blue')  # Function curve
