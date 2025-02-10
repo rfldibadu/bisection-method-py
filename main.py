@@ -16,7 +16,8 @@ def bisection_method(func, a, b, error_accept):
     :return: The approximate root and the error at the final iteration.
     """
     def f(x):
-        return eval(func, {"x": x, **math.__dict__})  # Allows sin, cos, etc.
+        return eval(func, {"x": x, "sin": math.sin, "cos": math.cos, "tan": math.tan,
+                           "log": math.log, "exp": math.exp, "pi": math.pi, "e": math.e})
 
     if f(a) * f(b) >= 0:
         raise ValueError("Error! No root or multiple roots in the given interval.")
@@ -65,8 +66,9 @@ def bisection_method(func, a, b, error_accept):
 
 def plot_function(func, a_start, b_start, midpoints, a_values, b_values):
     """ Plots the function and the bisection method iterations. """
-    x = np.linspace(a_start - 1, b_start + 1, 400)  # Range for function plotting
-    y = [eval(func, {"x": val, **math.__dict__}) for val in x]
+    x = np.linspace(-2, 6, 400)  # Ensure x-axis range matches the required values
+    y = [eval(func, {"x": val, "sin": math.sin, "cos": math.cos, "tan": math.tan,
+                     "log": math.log, "exp": math.exp, "pi": math.pi, "e": math.e}) for val in x]
 
     plt.figure(figsize=(8, 5))
     plt.plot(x, y, label=f"f(x) = {func}", color='blue')  # Function curve
@@ -80,17 +82,17 @@ def plot_function(func, a_start, b_start, midpoints, a_values, b_values):
     # Plot midpoints
     plt.scatter(midpoints, [0]*len(midpoints), color='purple', marker='x', label="Midpoints (c)")
 
+    # Set axis limits
+    plt.xlim(-2, 2)  # X-axis from -2 to 2
+    plt.ylim(-6, 6)  # Y-axis from -6 to 6
+
+    # Adjust tick intervals
+    plt.xticks(np.arange(-2, 3, 1))  # X-axis ticks every 1 unit
+    plt.yticks(np.arange(-6, 7, 2))  # Y-axis ticks every 2 units
+
     plt.xlabel("x")
     plt.ylabel("f(x)")
     plt.title("Bisection Method Iterations")
     plt.legend()
     plt.grid()
     plt.show()
-
-
-# # Example Usage:
-# root1, err1 = bisection_method("(4*x**3) + 3*x - 3", 0, 1, 0.05)
-# print(f"Root: {root1}, Error: {err1}")
-
-# root2, err2 = bisection_method("(3*x**2) - 4", -2, 0, 0.5)
-# print(f"Root: {root2}, Error: {err2}")
