@@ -59,48 +59,60 @@ def bisection_method(func, a, b, error_accept):
     print("----------------------------------------------------------------------------")
 
     # Plot function and iterations
-    plot_function(func, a_values[0], b_values[0], midpoints, a_values, b_values)
+    print(f"Final Interval: a = {a}, b = {b}")
+    print(f"Approximate Root: {c}, Final Error: {error}")
+
+    # Plot function and iterations as the last output
+    plot_function(func, a_values, b_values, midpoints)
 
     return a, b, c, error  # Return final interval, midpoint, and error
 
 
-def plot_function(func, a_start, b_start, midpoints, a_values, b_values):
-    """ Plots the function and the bisection method iterations. """
-    # Check if log(x) is in the function string
-    if "log(" in func:
-        x = np.linspace(0.01, 6, 400)  # Avoid log(0) and negative values
-    else:
-        x = np.linspace(-2, 2, 400)  # Allow negative values for other functions
+import numpy as np
+import matplotlib.pyplot as plt
+import math
 
-    # Safely evaluate the function
+def plot_function(func, a_values, b_values, midpoints):
+    """Plots a function and highlights bisection method steps dynamically."""
+    
+    # Define x range dynamically
+    x_min, x_max = min(a_values + b_values) - 1, max(a_values + b_values) + 1
+    x = np.linspace(x_min, x_max, 400)
+
+    # Compute y-values safely
     y = []
     for val in x:
         try:
             y.append(eval(func, {"x": val, "sin": math.sin, "cos": math.cos, "tan": math.tan,
                                  "log": math.log, "exp": math.exp, "pi": math.pi, "e": math.e}))
         except ValueError:
-            y.append(float('nan'))  # Handle domain errors (e.g., log(negative number))
+            y.append(float('nan'))  # Handle invalid function values
 
+    # Set dynamic y-limits
+    y_min, y_max = min(y), max(y)
+    y_margin = (y_max - y_min) * 0.1  # Add 10% margin
+    y_min, y_max = y_min - y_margin, y_max + y_margin
+
+    # Plot function
     plt.figure(figsize=(8, 5))
-    plt.plot(x, y, label=f"f(x) = {func}", color='blue')  # Function curve
-    plt.axhline(0, color='black', linewidth=1)  # x-axis
-    plt.axvline(0, color='black', linewidth=1)  # y-axis
+    plt.plot(x, y, label=f"f(x) = {func}", color='blue')
+    plt.axhline(0, color='black', linewidth=1)
+    plt.axvline(0, color='black', linewidth=1)
 
-    # Plot a, b boundaries
+    # Plot points
     plt.scatter(a_values, [0]*len(a_values), color='red', label="Lower bound (a)")
     plt.scatter(b_values, [0]*len(b_values), color='green', label="Upper bound (b)")
-
-    # Plot midpoints
     plt.scatter(midpoints, [0]*len(midpoints), color='purple', marker='x', label="Midpoints (c)")
 
-    # Set axis limits
-    plt.xlim(-2, 2)  # X-axis from -2 to 2
-    plt.ylim(-6, 6)  # Y-axis from -6 to 6
+    # Dynamic axis limits
+    plt.xlim(x_min, x_max)
+    plt.ylim(y_min, y_max)
 
-    # Adjust tick intervals
-    plt.xticks(np.arange(-2, 3, 1))  # X-axis ticks every 1 unit
-    plt.yticks(np.arange(-6, 7, 2))  # Y-axis ticks every 2 units
+    # Auto-tick placement
+    plt.xticks(np.linspace(x_min, x_max, 7))  # 7 evenly spaced ticks
+    plt.yticks(np.linspace(y_min, y_max, 7))
 
+    # Labels & display
     plt.xlabel("x")
     plt.ylabel("f(x)")
     plt.title("Bisection Method Iterations")
