@@ -67,11 +67,6 @@ def bisection_method(func, a, b, error_accept):
 
     return a, b, c, error  # Return final interval, midpoint, and error
 
-
-import numpy as np
-import matplotlib.pyplot as plt
-import math
-
 def plot_function(func, a_values, b_values, midpoints):
     """Plots a function and highlights bisection method steps dynamically."""
     
