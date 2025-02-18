@@ -51,4 +51,4 @@ def false_position_method(func, a, b, error_accept):
 
     plot_function(func, a_values, b_values, midpoints)  # Call plot function
 
-    return c, error
+    return a, b, c, error

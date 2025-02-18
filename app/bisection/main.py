@@ -1,4 +1,9 @@
-from app.plot.plot_function import plot_function
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+
+from app.plot import plot_function
 import math
 
 def bisection_method(func, a, b, error_accept):
@@ -46,4 +51,4 @@ def bisection_method(func, a, b, error_accept):
 
     plot_function(func, a_values, b_values, midpoints)  # Call plot function
 
-    return c, error
+    return a, b, c, error
