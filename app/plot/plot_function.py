@@ -29,8 +29,7 @@ def plot_function(func, a_values, b_values, midpoints):
     y_valid = y[mask]
     if len(y_valid) > 0:
         y_min, y_max = min(y_valid), max(y_valid)
-        y_margin = (y_max - y_min) * 0.1  # 10% margin
-        y_min, y_max = math.floor(y_min - y_margin), math.ceil(y_max + y_margin)
+        y_min, y_max = math.floor(y_min), math.ceil(y_max)  # No extra margin
     else:
         y_min, y_max = -1, 1  # Default range
 
@@ -62,7 +61,11 @@ def plot_function(func, a_values, b_values, midpoints):
     ax.set_xlim(math.floor(x_min), math.ceil(x_max))
     ax.set_ylim(y_min, y_max)
     ax.set_xticks(range(math.floor(x_min), math.ceil(x_max) + 1))
-    ax.set_yticks(range(y_min, y_max + 1))
+
+    # Adjust y-ticks based on range
+    y_range = y_max - y_min
+    y_tick_interval = max(1, math.ceil(y_range / 10))  # Ensure reasonable tick spacing
+    ax.set_yticks(range(y_min, y_max + 1, y_tick_interval))
 
     ax.set_xlabel("x")
     ax.set_ylabel("f(x)")
